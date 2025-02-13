@@ -2,6 +2,7 @@
 
 import prisma from "@/lib/prisma";
 import { auth, currentUser } from "@clerk/nextjs/server";
+import { error } from "console";
 
 
 
@@ -62,4 +63,18 @@ export async function getUserByclientId(clerkId: string) {
       }
     }
   });
+}
+
+
+
+
+export async function getUserIdFromDb() {
+  const { userId: clerkId } = await auth();
+  if (!clerkId) return null;
+
+  const user = getUserByclientId(clerkId)
+  if (!user) throw new Error("user not found");
+
+
+  return user.id;
 }
